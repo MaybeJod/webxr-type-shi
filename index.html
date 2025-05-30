@@ -19,6 +19,15 @@
 		<!-- <script src="https://cdn.8thwall.com/web/aframe/aframe-physics-system-4.2.2.min.js"></script> -->
 	</head>
 	<body>
+		<div>
+			<ul>
+				<li>"Space" to punch</li>
+				<li>"R" to restart</li>
+				<li>"W, A, S, D" to move</li>
+				<li>"Shift" to move up</li>
+				<li>"Ctrl" to move down</li>
+			</ul>
+		</div>
 		<a-scene
 			physics="driver: ammo; debug: false"
 			renderer="colorManagement: true; webgl2: false">
@@ -28,7 +37,13 @@
 			<a-light type="ambient" intensity="0.5"></a-light>
 
 			<!-- Camera + Glove Box -->
-			<a-camera id="camera" position="0 1.5 0">
+			<a-camera
+				id="camera"
+				position="0 5 40"
+				camera
+				look-controls
+				wasd-controls
+				vertical-controls>
 				<a-box
 					id="glove"
 					punch-tap
@@ -43,7 +58,7 @@
 
 			<!-- Ball (Sphere) -->
 			<a-sphere
-				id="soccer-ball"
+				id="ball"
 				radius="0.5"
 				color="white"
 				position="0 2 -3"
@@ -55,7 +70,7 @@
 				color="blue"
 				height="1"
 				radius="0.15"
-				position="0 1 -7"
+				position="0 0.5 -7"
 				ammo-body="type: dynamic"
 				ammo-shape="type: cylinder"
 				id="pin1"></a-cylinder>
@@ -127,18 +142,54 @@
 						);
 					};
 
-					this.el.sceneEl.addEventListener("click", this.punchAnimation);
+					this.el.sceneEl.addEventListener("keydown", this.punchAnimation);
 					window.addEventListener("keydown", (e) => {
 						if (e.key === " ") this.punchAnimation();
 					});
 				},
 			});
 
+			//Fly Controls Logic
+			AFRAME.registerComponent("vertical-controls", {
+				schema: {
+					speed: { type: "number", default: 5 },
+				},
+				init: function () {
+					this.velocity = 0;
+					this.keys = {};
+
+					window.addEventListener("keydown", (e) => {
+						if (e.key === "Shift") this.keys["shift"] = true;
+						if (e.key === "Control") this.keys["control"] = true;
+					});
+
+					window.addEventListener("keyup", (e) => {
+						if (e.key === "Shift") this.keys["shift"] = false;
+						if (e.key === "Control") this.keys["control"] = false;
+					});
+				},
+				tick: function (time, deltaTime) {
+					const el = this.el;
+					const position = el.getAttribute("position");
+					const delta = deltaTime / 1000;
+					const speed = this.data.speed;
+
+					if (this.keys["shift"]) {
+						position.y += speed * delta;
+					}
+
+					if (this.keys["control"]) {
+						position.y = Math.max(1, position.y - speed * delta);
+					}
+
+					el.setAttribute("position", position);
+				},
+			});
+
+			// Add R key to reload page
 			function resetGame() {
 				window.location.reload();
 			}
-
-			// Add R key to reload page
 			window.addEventListener("keydown", (e) => {
 				if (e.key === "r" || e.key === "R") {
 					console.log("R key pressed - resetting game");
