@@ -29,8 +29,9 @@
 			</ul>
 		</div>
 		<a-scene
-			physics="driver: ammo; debug: false"
-			renderer="colorManagement: true; webgl2: false">
+			physics="driver: ammo; debug: true"
+			renderer="colorManagement: true; webgl2: false"
+			stats>
 			<a-entity
 				light="type: directional; intensity: 0.8"
 				position="1 4.3 2.5"></a-entity>
@@ -40,11 +41,15 @@
 				<a-asset-item id="cat-obj" src="cat/Cat.obj"></a-asset-item>
 				<a-asset-item id="cat-mtl" src="cat/Cat.mtl"></a-asset-item>
 			</a-asset>
+
+			<!-- Cat with physics - wait for model to load -->
 			<a-entity
+				id="cat"
 				rotation="-90 0 0"
-				position="5 0 -10"
+				position="5 5 -10"
 				obj-model="obj: #cat-obj; mtl: #cat-mtl"
-				scale="0.3 0.3 0.3"></a-entity>
+				scale="0.1 0.1 0.1"
+				cat-physics></a-entity>
 
 			<!-- Camera + Glove Box -->
 			<a-camera
@@ -132,7 +137,7 @@
 				height="10"
 				width="20"
 				color="yellow"
-				ammo-body="type: static"
+				ammo-body="type: static; mass: 0"
 				ammo-shape="type: box"
 				position="-10 1 -10"></a-plane>
 			<!-- right wall -->
@@ -141,7 +146,7 @@
 				height="10"
 				width="20"
 				color="pink"
-				ammo-body="type: static"
+				ammo-body="type: static; mass: 0"
 				ammo-shape="type: box"
 				position="10 1 -10"></a-plane>
 			<!-- back wall -->
@@ -150,7 +155,7 @@
 				height="10"
 				width="20"
 				color="#0000ff"
-				ammo-body="type: static"
+				ammo-body="type: static; mass: 0"
 				ammo-shape="type: box"
 				position="0 1 -20"></a-plane>
 
@@ -160,21 +165,43 @@
 				height="20"
 				width="20"
 				color="#00ff00"
-				ammo-body="type: static"
+				ammo-body="type: static; mass: 0"
 				ammo-shape="type: box"
 				position="0 6 -10"></a-plane>
-			<!-- Ground Plane -->
+			<!-- Ground Plane - Make it thicker and more reliable -->
 			<a-plane
 				rotation="-90 0 0"
 				height="100"
 				width="100"
 				color="#000"
-				position="0 0 0"
-				ammo-body="type: static"
+				position="0 -0.5 0"
+				ammo-body="type: static; mass: 0"
 				ammo-shape="type: box"></a-plane>
 		</a-scene>
 
 		<script>
+			// Component to add physics after model loads
+			AFRAME.registerComponent("cat-physics", {
+				init: function () {
+					// Wait for the model to be loaded
+					this.el.addEventListener("model-loaded", (e) => {
+						console.log("Cat model loaded, adding physics...");
+						// Add physics components after model loads
+						// Scale the halfExtents to match the visual scale (0.3)
+						this.el.setAttribute("ammo-body", {
+							type: "dynamic",
+							mass: 1,
+							linearDamping: 0.1,
+							angularDamping: 0.1,
+						});
+						this.el.setAttribute("ammo-shape", {
+							type: "box",
+							halfExtents: { x: 0.05, y: 0.03, z: 0.08 },
+						});
+					});
+				},
+			});
+
 			// Simple punch animation component
 			AFRAME.registerComponent("punch-tap", {
 				schema: {
