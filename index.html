@@ -208,12 +208,12 @@
 
 					window.addEventListener("keydown", (e) => {
 						if (e.key === "Shift") this.keys["shift"] = true;
-						if (e.key === "Control") this.keys["control"] = true;
+						if (e.key === "c" || e.key === "C") this.keys["c" || "C"] = true;
 					});
 
 					window.addEventListener("keyup", (e) => {
 						if (e.key === "Shift") this.keys["shift"] = false;
-						if (e.key === "Control") this.keys["control"] = false;
+						if (e.key === "c" || e.key === "C") this.keys["c" || "C"] = false;
 					});
 				},
 				tick: function (time, deltaTime) {
@@ -226,7 +226,7 @@
 						position.y += speed * delta;
 					}
 
-					if (this.keys["control"]) {
+					if (this.keys["c" || "C"]) {
 						position.y = Math.max(1, position.y - speed * delta);
 					}
 
