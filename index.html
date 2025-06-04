@@ -3,45 +3,48 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Primitive Physics Scene</title>
+		<title>VR Physics Scene</title>
 
 		<!-- Load A-Frame first -->
 		<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-		<!-- <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script> -->
 
 		<!-- Then load Ammo.js (physics engine) -->
 		<script src="https://cdn.8thwall.com/web/aframe/ammo.wasm.js"></script>
-		<!-- <script src="http://kripken.github.io/ammo.js/builds/ammo.wasm.js"></script> -->
-		<!-- <script src="https://mixedreality.mozilla.org/ammo.js/builds/ammo.wasm.js"></script> -->
 
 		<!-- Then load the A-Frame physics system -->
 		<script src="https://unpkg.com/@c-frame/aframe-physics-system@4.2.2/dist/aframe-physics-system.min.js"></script>
-		<!-- <script src="https://cdn.8thwall.com/web/aframe/aframe-physics-system-4.2.2.min.js"></script> -->
 	</head>
 	<body>
-		<div>
+		<div id="instructions">
+			<h3>Controls:</h3>
 			<ul>
-				<li>"Space" to punch</li>
-				<li>"R" to restart</li>
-				<li>"W, A, S, D" to move</li>
-				<li>"Shift" to move up</li>
-				<li>"Ctrl" to move down</li>
+				<li><strong>Desktop:</strong> "Space" to punch, "R" to restart, "W,A,S,D" to move, "Shift/Ctrl" for up/down</li>
+				<li><strong>VR:</strong> Use thumbstick/trackpad to move, trigger buttons to punch</li>
+				<li><strong>Enter VR:</strong> Click the VR goggles icon in the bottom right</li>
 			</ul>
 		</div>
+
 		<a-scene
-			physics="driver: ammo; debug: true"
-			renderer="colorManagement: true; webgl2: false">
+			physics="driver: ammo; debug: false"
+			renderer="colorManagement: true; webgl2: false"
+			vr-mode-ui="enabled: true"
+			device-orientation-permission-ui="enabled: false"
+			keyboard-shortcuts="enterVR: false; exitVR: false">
+			
+			<!-- Lighting -->
 			<a-entity
 				light="type: directional; intensity: 0.8"
 				position="1 4.3 2.5"></a-entity>
 			<a-light type="ambient" intensity="0.5"></a-light>
 
-			<!-- Cat with physics - wait for model to load -->
-			<a-asset>
+			<!-- Assets -->
+			<a-assets>
 				<a-asset-item id="cat-obj" src="cat/Cat.obj"></a-asset-item>
 				<a-asset-item id="cat-mtl" src="cat/Cat.mtl"></a-asset-item>
-			</a-asset>
+				<a-asset-item id="jod" src="/jod/jod.gltf"></a-asset-item>
+			</a-assets>
 
+			<!-- Cat with physics -->
 			<a-entity
 				id="cat"
 				rotation="-90 0 0"
@@ -50,33 +53,86 @@
 				scale="0.1 0.1 0.1"
 				cat-physics></a-entity>
 
-			<!-- jod -->
-			<a-assets>
-				<a-asset-item id="jod" src="/jod/jod.gltf"></a-asset-item>
-			</a-assets>
+			<!-- Jod models -->
 			<a-entity gltf-model="#jod" cat-physics position="3 0 -4"></a-entity>
 			<a-entity gltf-model="#jod" cat-physics position="3 0 -5"></a-entity>
 			<a-entity gltf-model="#jod" cat-physics position="3 0 -6"></a-entity>
 
-			<!-- Camera + Glove Box -->
-			<a-camera
-				id="camera"
-				position="0 2 10"
-				camera
-				look-controls
-				wasd-controls
-				vertical-controls>
-				<a-box
-					id="glove"
-					punch-tap
-					color="red"
-					depth="0.5"
-					height="0.5"
-					width="0.5"
-					ammo-body="type: kinematic"
-					ammo-shape="type: box"
-					position="0 -1 -1"></a-box>
-			</a-camera>
+			<!-- VR Camera Rig -->
+			<a-entity 
+				id="cameraRig" 
+				position="0 0 10"
+				movement-controls="fly: false; constrainToNavMesh: false; speed: 0.3">
+				
+				<!-- VR Camera -->
+				<a-camera
+					id="camera"
+					position="0 1.6 0"
+					look-controls="pointerLockEnabled: true"
+					wasd-controls="enabled: true; acceleration: 100"
+					vertical-controls>
+					<!-- Desktop glove attached to camera -->
+					<a-box
+						id="cameraGlove"
+						punch-tap
+						color="red"
+						depth="0.5"
+						height="0.5"
+						width="0.5"
+						ammo-body="type: kinematic"
+						ammo-shape="type: box"
+						position="0 -1 -1"></a-box>
+				</a-camera>
+				</a-camera>
+
+				<!-- Left Hand Controller -->
+				<a-entity
+					id="leftHand"
+					hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
+					tracked-controls
+					vive-controls
+					oculus-touch-controls="hand: left"
+					windows-motion-controls="hand: left"
+					vr-controller
+					controller-cursor
+					position="0 0 0">
+					<!-- Left Hand Glove/Fist -->
+					<a-box
+						id="leftGlove"
+						color="blue"
+						depth="0.3"
+						height="0.3"
+						width="0.3"
+						position="0 0 -0.1"
+						ammo-body="type: kinematic"
+						ammo-shape="type: box"
+						punch-controller="hand: left"></a-box>
+				</a-entity>
+
+				<!-- Right Hand Controller -->
+				<a-entity
+					id="rightHand"
+					hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
+					tracked-controls
+					vive-controls
+					oculus-touch-controls="hand: right"
+					windows-motion-controls="hand: right"
+					vr-controller
+					controller-cursor
+					position="0 0 0">
+					<!-- Right Hand Glove/Fist -->
+					<a-box
+						id="rightGlove"
+						color="red"
+						depth="0.3"
+						height="0.3"
+						width="0.3"
+						position="0 0 -0.1"
+						ammo-body="type: kinematic"
+						ammo-shape="type: box"
+						punch-controller="hand: right"></a-box>
+				</a-entity>
+			</a-entity>
 
 			<!-- Ball (Sphere) -->
 			<a-sphere
@@ -137,7 +193,7 @@
 				ammo-shape="type: cylinder"
 				id="pin6"></a-cylinder>
 
-			<!-- room -->
+			<!-- Room Walls -->
 			<!-- left wall -->
 			<a-plane
 				rotation="0 90 0"
@@ -175,7 +231,8 @@
 				ammo-body="type: static"
 				ammo-shape="type: box"
 				position="0 6 -10"></a-plane>
-			<!-- Ground Plane - Make it thicker and more reliable -->
+			
+			<!-- Ground Plane -->
 			<a-box
 				rotation="0 0 0"
 				height="1"
@@ -188,14 +245,16 @@
 		</a-scene>
 
 		<script>
+			// Check if in VR mode
+			function isVRMode() {
+				return document.querySelector('a-scene').is('vr-mode');
+			}
+
 			// Component to add physics after model loads
 			AFRAME.registerComponent("cat-physics", {
 				init: function () {
-					// Wait for the model to be loaded
 					this.el.addEventListener("model-loaded", (e) => {
-						console.log("Cat model loaded, adding physics...");
-						// Add physics components after model loads
-						// Scale the halfExtents to match the visual scale (0.3)
+						console.log("Model loaded, adding physics...");
 						this.el.setAttribute("ammo-body", {
 							type: "dynamic",
 							mass: 1,
@@ -204,13 +263,64 @@
 						});
 						this.el.setAttribute("ammo-shape", {
 							type: "box",
-							// halfExtents: { x: 1, y: 1, z: 1 },
 						});
 					});
 				},
 			});
 
-			// Simple punch animation component
+			// VR Controller Component
+			AFRAME.registerComponent("vr-controller", {
+				init: function () {
+					this.el.addEventListener('controllerconnected', (evt) => {
+						console.log('Controller connected:', evt.detail.name);
+					});
+				}
+			});
+
+			// Enhanced punch component for VR controllers
+			AFRAME.registerComponent("punch-controller", {
+				schema: {
+					hand: { type: "string", default: "right" }
+				},
+				init: function () {
+					this.controller = this.el.parentEl;
+					this.originalPosition = { x: 0, y: 0, z: -0.1 };
+					this.punching = false;
+
+					// Listen for trigger/grip button presses
+					this.controller.addEventListener('triggerdDown', this.punch.bind(this));
+					this.controller.addEventListener('gripdown', this.punch.bind(this));
+					this.controller.addEventListener('abuttondown', this.punch.bind(this));
+					this.controller.addEventListener('bbuttondown', this.punch.bind(this));
+					this.controller.addEventListener('xbuttondown', this.punch.bind(this));
+					this.controller.addEventListener('ybuttondown', this.punch.bind(this));
+				},
+				punch: function () {
+					if (this.punching) return;
+					this.punching = true;
+
+					console.log(`${this.data.hand} hand punching!`);
+					
+					// Punch animation
+					this.el.removeAttribute("animation");
+					this.el.setAttribute("animation", {
+						property: "position",
+						dur: 150,
+						from: "0 0 -0.1",
+						to: "0 0 -0.5",
+						dir: "alternate",
+						loop: 2,
+						easing: "easeInOutQuad"
+					});
+
+					// Reset punching state
+					setTimeout(() => {
+						this.punching = false;
+					}, 300);
+				}
+			});
+
+			// Desktop punch component (fallback)
 			AFRAME.registerComponent("punch-tap", {
 				schema: {
 					yOffset: { type: "number", default: -1 },
@@ -225,60 +335,127 @@
 						);
 					};
 
-					this.el.sceneEl.addEventListener("keydown", this.punchAnimation);
 					window.addEventListener("keydown", (e) => {
-						if (e.key === " ") this.punchAnimation();
+						if (e.key === " " && !isVRMode()) {
+							this.punchAnimation();
+						}
 					});
 				},
 			});
 
-			//Fly Controls Logic
+			// Enhanced movement controls that work with VR
 			AFRAME.registerComponent("vertical-controls", {
 				schema: {
-					speed: { type: "number", default: 5 },
+					speed: { type: "number", default: 3 },
 				},
 				init: function () {
-					this.velocity = 0;
 					this.keys = {};
 
 					window.addEventListener("keydown", (e) => {
 						if (e.key === "Shift") this.keys["shift"] = true;
-						if (e.key === "c" || e.key === "C") this.keys["c" || "C"] = true;
+						if (e.key === "Control" || e.key === "c" || e.key === "C") this.keys["ctrl"] = true;
 					});
 
 					window.addEventListener("keyup", (e) => {
 						if (e.key === "Shift") this.keys["shift"] = false;
-						if (e.key === "c" || e.key === "C") this.keys["c" || "C"] = false;
+						if (e.key === "Control" || e.key === "c" || e.key === "C") this.keys["ctrl"] = false;
 					});
 				},
 				tick: function (time, deltaTime) {
-					const el = this.el;
-					const position = el.getAttribute("position");
+					if (isVRMode()) return; // Don't apply desktop controls in VR
+
+					const camera = this.el;
+					const cameraRig = camera.parentEl;
+					const rigPosition = cameraRig.getAttribute("position");
 					const delta = deltaTime / 1000;
 					const speed = this.data.speed;
 
 					if (this.keys["shift"]) {
-						position.y += speed * delta;
+						rigPosition.y += speed * delta;
+						cameraRig.setAttribute("position", rigPosition);
 					}
 
-					if (this.keys["c" || "C"]) {
-						position.y = Math.max(1, position.y - speed * delta);
+					if (this.keys["ctrl"]) {
+						rigPosition.y = Math.max(0.5, rigPosition.y - speed * delta);
+						cameraRig.setAttribute("position", rigPosition);
 					}
-
-					el.setAttribute("position", position);
 				},
 			});
 
-			// Add R key to reload page
+			// VR mode detection and UI management
+			AFRAME.registerComponent("vr-mode-handler", {
+				init: function () {
+					const sceneEl = this.el;
+					const desktopGlove = document.querySelector('#cameraGlove');
+
+					sceneEl.addEventListener('enter-vr', () => {
+						console.log('Entered VR mode');
+						if (desktopGlove) desktopGlove.setAttribute('visible', false);
+						
+						// Force enable movement controls for VR
+						setTimeout(() => {
+							const cameraRig = document.querySelector('#cameraRig');
+							if (cameraRig) {
+								console.log('Enabling VR movement controls');
+								cameraRig.setAttribute('movement-controls', {
+									fly: false,
+									constrainToNavMesh: false,
+									speed: 0.3,
+									enabled: true
+								});
+							}
+						}, 100);
+					});
+
+					sceneEl.addEventListener('exit-vr', () => {
+						console.log('Exited VR mode');
+						if (desktopGlove) desktopGlove.setAttribute('visible', true);
+					});
+				}
+			});
+
+			// Add the VR mode handler to the scene
+			document.querySelector('a-scene').setAttribute('vr-mode-handler', '');
+
+			// Reset game function
 			function resetGame() {
 				window.location.reload();
 			}
+
 			window.addEventListener("keydown", (e) => {
 				if (e.key === "r" || e.key === "R") {
 					console.log("R key pressed - resetting game");
 					resetGame();
 				}
 			});
+
+			// Desktop WASD controls - removed since we're using built-in wasd-controls
 		</script>
+
+		<style>
+			#instructions {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				background: rgba(0,0,0,0.8);
+				color: white;
+				padding: 15px;
+				border-radius: 5px;
+				font-family: Arial, sans-serif;
+				z-index: 999;
+				max-width: 400px;
+			}
+			#instructions h3 {
+				margin-top: 0;
+				color: #4CAF50;
+			}
+			#instructions ul {
+				margin: 10px 0;
+				padding-left: 20px;
+			}
+			#instructions li {
+				margin: 5px 0;
+			}
+		</style>
 	</body>
 </html>
