@@ -5,12 +5,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>VR Physics Scene</title>
 
+		<!-- aframe -->
 		<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
 
+		<!-- physics -->
 		<script src="https://cdn.8thwall.com/web/aframe/ammo.wasm.js"></script>
 
 		<script src="https://unpkg.com/@c-frame/aframe-physics-system@4.2.2/dist/aframe-physics-system.min.js"></script>
 
+		<!-- controller -->
 		<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.1/dist/aframe-extras.controls.min.js"></script>
 	</head>
 	<body>
@@ -32,11 +35,13 @@
 		</div>
 
 		<a-scene
-			physics="driver: ammo; debug: false"
+			physics="driver: ammo; debug: true"
 			renderer="colorManagement: true; webgl2: false"
 			vr-mode-ui="enabled: true"
 			device-orientation-permission-ui="enabled: false"
-			keyboard-shortcuts="enterVR: false; exitVR: false">
+			keyboard-shortcuts="enterVR: false; exitVR: false"
+			stats
+			debug>
 			<a-entity
 				light="type: directional; intensity: 0.8"
 				position="1 4.3 2.5"></a-entity>
@@ -45,7 +50,7 @@
 			<a-assets>
 				<a-asset-item id="cat-obj" src="cat/Cat.obj"></a-asset-item>
 				<a-asset-item id="cat-mtl" src="cat/Cat.mtl"></a-asset-item>
-				<a-asset-item id="jod" src="/jod/jod.gltf"></a-asset-item>
+				<a-asset-item id="jod" src="jod/jod.gltf"></a-asset-item>
 			</a-assets>
 
 			<a-entity
@@ -57,14 +62,10 @@
 				cat-physics></a-entity>
 
 			<a-entity position="3 0 -4">
-				<a-gltf-model id="#jod" cat-physics src="/jod//jod.gltf">
-				</a-gltf-model>
-				<a-gltf-model id="#jod" cat-physics src="/jod//jod.gltf">
-				</a-gltf-model>
-				<a-gltf-model id="#jod" cat-physics src="/jod//jod.gltf">
-				</a-gltf-model>
-				<a-gltf-model id="#jod" cat-physics src="/jod//jod.gltf">
-				</a-gltf-model>
+				<a-entity gltf-model="#jod" cat-physics position="0 0 0"></a-entity>
+				<a-entity gltf-model="#jod" cat-physics position="1 0 0"></a-entity>
+				<a-entity gltf-model="#jod" cat-physics position="0 0 1"></a-entity>
+				<a-entity gltf-model="#jod" cat-physics position="1 0 1"></a-entity>
 			</a-entity>
 			<!-- <a-entity gltf-model="#jod" cat-physics position="3 0 -5"></a-entity>
 			<a-entity gltf-model="#jod" cat-physics position="3 0 -6"></a-entity> -->
