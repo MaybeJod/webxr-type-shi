@@ -47,7 +47,35 @@
 				<a-asset-item id="cat-mtl" src="cat/Cat.mtl"></a-asset-item>
 				<a-asset-item id="jod" src="jod/jod.gltf"></a-asset-item>
 				<a-asset-item id="room" src="room/scene.gltf"></a-asset-item>
+				<a-asset-item id="book" src="objects/book/scene.gltf"></a-asset-item>
+
+				<a-asset-item
+					id="fridge"
+					src="objects/fridge/scene.gltf"></a-asset-item>
+				<a-asset-item id="glass" src="objects/glass/scene.gltf"></a-asset-item>
+				<a-asset-item
+					id="mirror"
+					src="objects/mirror/scene.gltf"></a-asset-item>
+
+				<a-asset-item id="table" src="objects/table/scene.gltf"></a-asset-item>
+				<a-asset-item
+					id="toilet"
+					src="objects/toilet/scene.gltf"></a-asset-item>
+				<a-asset-item id="vase" src="objects/vase/scene.gltf"></a-asset-item>
 			</a-assets>
+
+			<!-- objects -->
+
+			<a-entity gltf-model="#book" cat-physics position="0 0 -20"></a-entity>
+			=
+			<a-entity gltf-model="#fridge" cat-physics position="0 0 -20"></a-entity>
+
+			<a-entity gltf-model="#glass" cat-physics position="0 0 -20"></a-entity>
+			<a-entity gltf-model="#mirror" cat-physics position="0 0 -20"></a-entity>
+
+			<a-entity gltf-model="#table" cat-physics position="0 0 -20"></a-entity>
+			<a-entity gltf-model="#toilet" cat-physics position="0 0 -20"></a-entity>
+			<a-entity gltf-model="#vase" cat-physics position="0 0 -20"></a-entity>
 
 			<!-- Sound entity -->
 			<a-entity
@@ -57,9 +85,7 @@
 			<a-entity
 				gltf-model="#room"
 				rotation="0 -90 0"
-				position="0 0 -40"
-				ammo-body="type: static"
-				ammo-shape="type: box"></a-entity>
+				position="0 0 -40"></a-entity>
 
 			<!-- Models with physics -->
 			<a-entity
@@ -246,14 +272,14 @@
 				position="0 1 21"></a-plane>
 
 			<!-- roof -->
-			<a-plane
+			<!-- <a-plane
 				rotation="90 0 0"
 				height="100"
 				width="50"
 				color="#fff"
 				ammo-body="type: static"
 				ammo-shape="type: box"
-				position="0 15 -10"></a-plane>
+				position="0 15 -10"></a-plane> -->
 
 			<!-- ground -->
 			<a-box

@@ -1,0 +1,11 @@
+Model Information:
+* title:	low poly stand mirror
+* source:	https://sketchfab.com/3d-models/low-poly-stand-mirror-8b323fecce674e0fbc90c69f63ea0a8f
+* author:	MrPuppet (https://sketchfab.com/MrPuppet)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "low poly stand mirror" (https://sketchfab.com/3d-models/low-poly-stand-mirror-8b323fecce674e0fbc90c69f63ea0a8f) by MrPuppet (https://sketchfab.com/MrPuppet) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
