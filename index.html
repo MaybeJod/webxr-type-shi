@@ -62,6 +62,9 @@
 					id="toilet"
 					src="objects/toilet/scene.gltf"></a-asset-item>
 				<a-asset-item id="vase" src="objects/vase/scene.gltf"></a-asset-item>
+				<a-asset-item
+					id="boxingGlove"
+					src="boxingGlove/scene.gltf"></a-asset-item>
 			</a-assets>
 
 			<!-- objects -->
@@ -71,7 +74,11 @@
 			<a-entity gltf-model="#fridge" cat-physics position="0 0 -20"></a-entity>
 
 			<a-entity gltf-model="#glass" cat-physics position="0 0 -20"></a-entity>
-			<a-entity gltf-model="#mirror" cat-physics position="0 0 -20"></a-entity>
+			<a-entity
+				gltf-model="#mirror"
+				cat-physics
+				position="0 0 -20"
+				scale="50 50 50"></a-entity>
 
 			<a-entity gltf-model="#table" cat-physics position="0 0 -20"></a-entity>
 			<a-entity gltf-model="#toilet" cat-physics position="0 0 -20"></a-entity>
@@ -106,7 +113,7 @@
 			<a-entity gltf-model="#jod" cat-physics position="0 0 6"></a-entity>
 
 			<a-entity
-				text="value: Hello travelor, relax and just start punching; color: #FAFAFA; width: 5; anchor: align"
+				text="value: Hello traveler, relax and just start punching; color: #FAFAFA; width: 5; anchor: align"
 				position="-3 1 6"
 				scale="1.5 1.5 1.5"></a-entity>
 
@@ -122,9 +129,9 @@
 						id="cameraGlove"
 						punch-tap
 						color="red"
-						depth="0.5"
-						height="0.5"
-						width="0.5"
+						depth="0.9"
+						height="0.9"
+						width="0.9"
 						ammo-body="type: kinematic"
 						ammo-shape="type: box"
 						position="0 -1 -1"></a-box>
@@ -286,7 +293,7 @@
 				height="1"
 				width="100"
 				depth="100"
-				color="#000"
+				color="grey"
 				position="0 -0.4 0"
 				ammo-body="type: static"
 				ammo-shape="type: box; halfExtents: 50 0.5 50"></a-box>
