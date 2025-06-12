@@ -16,10 +16,13 @@
 			<h3>Controls:</h3>
 			<ul>
 				<li>
-					<strong>Desktop:</strong> Space to punch, R to reset, WASD to move,
-					Shift/Ctrl for vertical
+					<strong>Desktop:</strong> Space to punch, R to reset, G to generate
+					jod, WASD to move, Shift/Ctrl for vertical
 				</li>
-				<li><strong>VR:</strong> Grip to fly, Trigger to punch</li>
+				<li>
+					<strong>VR:</strong> Grip to fly, Trigger to punch, A/X button to
+					generate jod
+				</li>
 				<li><strong>Enter VR:</strong> Click the goggles icon</li>
 			</ul>
 		</div>
@@ -117,6 +120,9 @@
 				position="-3 1 6"
 				scale="1.5 1.5 1.5"></a-entity>
 
+			<!-- Container for dynamically generated jods -->
+			<a-entity id="jodContainer"></a-entity>
+
 			<!-- Player rig, cameras & controllers -->
 			<a-entity id="cameraRig" position="0 0 10">
 				<a-camera
@@ -145,7 +151,8 @@
 					animation-trigger="hand: left"
 					tracked-controls-webxr="hand: left"
 					controller-cursor
-					vr-controller>
+					vr-controller
+					jod-generator="hand: left">
 					<a-box
 						color="blue"
 						punch-controller
@@ -165,7 +172,8 @@
 					animation-trigger="hand: right"
 					tracked-controls-webxr="hand: right"
 					controller-cursor
-					vr-controller>
+					vr-controller
+					jod-generator="hand: right">
 					<a-box
 						color="red"
 						punch-controller
@@ -300,9 +308,34 @@
 		</a-scene>
 
 		<script>
+			// Global variable to track jod count for unique IDs
+			let jodCount = 0;
+
 			// Check if in VR mode
 			function isVRMode() {
 				return document.querySelector("a-scene").is("vr-mode");
+			}
+
+			// Function to generate a new jod
+			function generateJod() {
+				const container = document.querySelector("#jodContainer");
+				const newJod = document.createElement("a-entity");
+
+				// Generate random position in front of the player
+				const randomX = (Math.random() - 0.5) * 10; // -5 to 5
+				const randomY = Math.random() * 3 + 1; // 1 to 4
+				const randomZ = -(Math.random() * 5 + 2); // -2 to -7
+
+				newJod.setAttribute("gltf-model", "#jod");
+				newJod.setAttribute("cat-physics", "");
+				newJod.setAttribute("position", `${randomX} ${randomY} ${randomZ}`);
+				newJod.setAttribute("id", `generated-jod-${jodCount++}`);
+
+				container.appendChild(newJod);
+
+				console.log(
+					`Generated new jod at position: ${randomX}, ${randomY}, ${randomZ}`
+				);
 			}
 
 			// Component to add physics after model loads
@@ -320,6 +353,30 @@
 							type: "box",
 						});
 					});
+				},
+			});
+
+			// Component for VR jod generation
+			AFRAME.registerComponent("jod-generator", {
+				schema: {
+					hand: { type: "string", default: "right" },
+				},
+				init: function () {
+					this.controller = this.el;
+
+					// Listen for A and X button presses (primary buttons on each controller)
+					this.controller.addEventListener(
+						"abuttondown",
+						this.generateJod.bind(this)
+					);
+					this.controller.addEventListener(
+						"xbuttondown",
+						this.generateJod.bind(this)
+					);
+				},
+				generateJod: function () {
+					console.log(`${this.data.hand} hand generated jod!`);
+					generateJod();
 				},
 			});
 
@@ -364,15 +421,7 @@
 					);
 					this.controller.addEventListener("gripdown", this.punch.bind(this)); // Could also be used for punch if not for flight
 					this.controller.addEventListener(
-						"abuttondown",
-						this.punch.bind(this)
-					);
-					this.controller.addEventListener(
 						"bbuttondown",
-						this.punch.bind(this)
-					);
-					this.controller.addEventListener(
-						"xbuttondown",
 						this.punch.bind(this)
 					);
 					this.controller.addEventListener(
@@ -566,10 +615,17 @@
 				window.location.reload();
 			}
 
+			// Desktop keyboard controls
 			window.addEventListener("keydown", (e) => {
 				if (e.key === "r" || e.key === "R") {
 					console.log("R key pressed - resetting game");
 					resetGame();
+				}
+
+				// G key to generate jod (desktop only)
+				if ((e.key === "g" || e.key === "G") && !isVRMode()) {
+					console.log("G key pressed - generating jod");
+					generateJod();
 				}
 			});
 		</script>
