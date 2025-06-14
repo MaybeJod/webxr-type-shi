@@ -11,3 +11,7 @@ expressive.
 
 By the end of the course, I will have developed an interactive piece that demonstrates
 your ability to combine design, code, and interaction in imaginative ways.
+
+## Team Lebron
+
+[Link to Team page](https://dstjp.github.io/08_XR/)
